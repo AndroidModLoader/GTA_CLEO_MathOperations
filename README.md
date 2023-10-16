@@ -39,6 +39,11 @@ These are giving an access to math functions such as sine, cosine and more.
 ```
 
 ### Notes
+About all opcodes:
+```
+If you want to use degrees, sadly the original functions are using RADIANS. Im keeping it in radians for performance purposes.
+```
+
 About fpclassify (opcode 1C29):
 ```
 The returned value is an integer:
