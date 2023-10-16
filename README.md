@@ -36,12 +36,20 @@ These are giving an access to math functions such as sine, cosine and more.
 1C27=2,%2d% = trunc %1d%
 1C28=3,%3d% = remainder %1d% %2d%
 1C29=2,%2d% = fpclassify %1d%
+1C30=4,%4d% = clamp_float %1d% limit %2d% %3d%
+1C31=4,%4d% = clamp_int %1d% limit %2d% %3d%
+1C32=7,%7d% = distance_from %1d% %2d% %3d% to %4d% %5d% %6d%
+1C33=3,%3d% = distance_from %1d% to_vec %2d%
+1C34=5,%5d% = distance2d_from %1d% %2d% to %3d% %4d%
+1C35=3,%3d% = distance2d_from %1d% to_vec %2d%
+1C36=2,%2d% = invsqrt %1d%
 ```
 
 ### Notes
 About all opcodes:
 ```
-If you want to use degrees, sadly the original functions are using RADIANS. Im keeping it in radians for performance purposes.
+If you want to use degrees, sadly the original functions are using RADIANS.
+Im keeping it in radians for performance purposes.
 ```
 
 About fpclassify (opcode 1C29):

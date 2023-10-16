@@ -13,6 +13,21 @@ END_DEPLIST()
 #define CLEO_RegisterOpcode(x, h) cleo->RegisterOpcode(x, h); cleo->RegisterOpcodeFunction(#h, h)
 #define CLEO_Fn(h) void h (void *handle, uint32_t *ip, uint16_t opcode, const char *name)
 
+struct GTAVector
+{
+    float x, y, z;
+    inline float GetDistance(GTAVector* a)
+    {
+        GTAVector b = { x - a->x, y - a->y, z - a->z };
+        return sqrt(b.x * b.x + b.y * b.y + b.z * b.z);
+    }
+    inline float GetDistance2D(GTAVector* a)
+    {
+        GTAVector b = { x - a->x, y - a->y, 0 };
+        return sqrt(b.x * b.x + b.y * b.y);
+    }
+};
+
 // ------------------------------------[1C00 - 1C09]---------------------------------------------
 
 CLEO_Fn(DEGREE_TO_RADIAN)
@@ -188,6 +203,76 @@ CLEO_Fn(FPCLASSIFY)
     cleo->GetPointerToScriptVar(handle)->i = fpclassify(f);
 }
 
+// ------------------------------------[1C30 - 1C39]---------------------------------------------
+
+CLEO_Fn(CLAMP_FLOAT)
+{
+    float f = cleo->ReadParam(handle)->f;
+    float a = cleo->ReadParam(handle)->f;
+    float b = cleo->ReadParam(handle)->f;
+    if(f < a) f = a;
+    else if(f > b) f = b;
+    cleo->GetPointerToScriptVar(handle)->f = f;
+}
+CLEO_Fn(CLAMP_INT)
+{
+    int f = cleo->ReadParam(handle)->i;
+    int a = cleo->ReadParam(handle)->i;
+    int b = cleo->ReadParam(handle)->i;
+    if(f < a) f = a;
+    else if(f > b) f = b;
+    cleo->GetPointerToScriptVar(handle)->i = f;
+}
+CLEO_Fn(DISTANCE_FLOAT)
+{
+    GTAVector a, b;
+
+    a.x = cleo->ReadParam(handle)->f;
+    a.y = cleo->ReadParam(handle)->f;
+    a.z = cleo->ReadParam(handle)->f;
+
+    b.x = cleo->ReadParam(handle)->f;
+    b.y = cleo->ReadParam(handle)->f;
+    b.z = cleo->ReadParam(handle)->f;
+
+    cleo->GetPointerToScriptVar(handle)->f = a.GetDistance(&b);
+}
+CLEO_Fn(DISTANCE_VECTOR)
+{
+    GTAVector *a, *b;
+
+    a = (GTAVector*)cleo->ReadParam(handle)->i;
+    b = (GTAVector*)cleo->ReadParam(handle)->i;
+
+    cleo->GetPointerToScriptVar(handle)->f = a->GetDistance(b);
+}
+CLEO_Fn(DISTANCE2D_FLOAT)
+{
+    GTAVector a, b;
+
+    a.x = cleo->ReadParam(handle)->f;
+    a.y = cleo->ReadParam(handle)->f;
+
+    b.x = cleo->ReadParam(handle)->f;
+    b.y = cleo->ReadParam(handle)->f;
+
+    cleo->GetPointerToScriptVar(handle)->f = a.GetDistance2D(&b);
+}
+CLEO_Fn(DISTANCE2D_VECTOR)
+{
+    GTAVector *a, *b;
+
+    a = (GTAVector*)cleo->ReadParam(handle)->i;
+    b = (GTAVector*)cleo->ReadParam(handle)->i;
+
+    cleo->GetPointerToScriptVar(handle)->f = a->GetDistance2D(b);
+}
+CLEO_Fn(INVSQRT)
+{
+    int f = cleo->ReadParam(handle)->f;
+    cleo->GetPointerToScriptVar(handle)->f = 1.0 / sqrt(f);
+}
+
 // ----------------------------------------------------------------------------------------------
 
 extern "C" void OnModLoad()
@@ -231,4 +316,12 @@ extern "C" void OnModLoad()
     CLEO_RegisterOpcode(0x1C27, TRUNC); // 1C27=2,%2d% = trunc %1d%
     CLEO_RegisterOpcode(0x1C28, REMAINDER); // 1C28=3,%3d% = remainder %1d% %2d%
     CLEO_RegisterOpcode(0x1C29, FPCLASSIFY); // 1C29=2,%2d% = fpclassify %1d%
+    
+    CLEO_RegisterOpcode(0x1C30, CLAMP_FLOAT); // 1C30=4,%4d% = clamp_float %1d% limit %2d% %3d%
+    CLEO_RegisterOpcode(0x1C31, CLAMP_INT); // 1C31=4,%4d% = clamp_int %1d% limit %2d% %3d%
+    CLEO_RegisterOpcode(0x1C32, DISTANCE_FLOAT); // 1C32=7,%7d% = distance_from %1d% %2d% %3d% to %4d% %5d% %6d%
+    CLEO_RegisterOpcode(0x1C33, DISTANCE_VECTOR); // 1C33=3,%3d% = distance_from %1d% to_vec %2d%
+    CLEO_RegisterOpcode(0x1C34, DISTANCE2D_FLOAT); // 1C34=5,%5d% = distance2d_from %1d% %2d% to %3d% %4d%
+    CLEO_RegisterOpcode(0x1C35, DISTANCE2D_VECTOR); // 1C35=3,%3d% = distance2d_from %1d% to_vec %2d%
+    CLEO_RegisterOpcode(0x1C36, INVSQRT); // 1C36=2,%2d% = invsqrt %1d%
 }
