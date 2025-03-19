@@ -43,6 +43,8 @@ These are giving an access to math functions such as sine, cosine and more.
 1C34=5,%5d% = distance2d_from %1d% %2d% to %3d% %4d%
 1C35=3,%3d% = distance2d_from %1d% to_vec %2d%
 1C36=2,%2d% = invsqrt %1d%
+1C37=2,%2d% = tgamma %1d%
+1C38=2,%2d% = lgamma %1d%
 ```
 
 ### Notes

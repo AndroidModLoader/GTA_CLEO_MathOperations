@@ -1,6 +1,6 @@
 #include <mod/amlmod.h>
 #include <mod/logger.h>
-#include <math.h>
+#include <cmath>
 
 #include "cleo.h"
 cleo_ifs_t* cleo = nullptr;
@@ -272,6 +272,16 @@ CLEO_Fn(INVSQRT)
     int f = cleo->ReadParam(handle)->f;
     cleo->GetPointerToScriptVar(handle)->f = 1.0 / sqrt(f);
 }
+CLEO_Fn(TGAMMA)
+{
+    int f = cleo->ReadParam(handle)->f;
+    cleo->GetPointerToScriptVar(handle)->f = tgammaf(f);
+}
+CLEO_Fn(LGAMMA)
+{
+    int f = cleo->ReadParam(handle)->f;
+    cleo->GetPointerToScriptVar(handle)->f = lgammaf(f);
+}
 
 // ----------------------------------------------------------------------------------------------
 
@@ -324,4 +334,6 @@ extern "C" void OnModLoad()
     CLEO_RegisterOpcode(0x1C34, DISTANCE2D_FLOAT); // 1C34=5,%5d% = distance2d_from %1d% %2d% to %3d% %4d%
     CLEO_RegisterOpcode(0x1C35, DISTANCE2D_VECTOR); // 1C35=3,%3d% = distance2d_from %1d% to_vec %2d%
     CLEO_RegisterOpcode(0x1C36, INVSQRT); // 1C36=2,%2d% = invsqrt %1d%
+    CLEO_RegisterOpcode(0x1C37, TGAMMA); // 1C37=2,%2d% = tgamma %1d%
+    CLEO_RegisterOpcode(0x1C38, LGAMMA); // 1C38=2,%2d% = lgamma %1d%
 }
